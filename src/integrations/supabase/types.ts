@@ -14,16 +14,360 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      analytics: {
+        Row: {
+          complaints_count: number
+          created_at: string
+          date: string
+          id: string
+          segregated_percentage: number
+          total_collections: number
+          ward_id: string
+        }
+        Insert: {
+          complaints_count?: number
+          created_at?: string
+          date?: string
+          id?: string
+          segregated_percentage?: number
+          total_collections?: number
+          ward_id: string
+        }
+        Update: {
+          complaints_count?: number
+          created_at?: string
+          date?: string
+          id?: string
+          segregated_percentage?: number
+          total_collections?: number
+          ward_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_ward_id_fkey"
+            columns: ["ward_id"]
+            isOneToOne: false
+            referencedRelation: "wards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          entity: string
+          entity_id: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          entity: string
+          entity_id?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          entity?: string
+          entity_id?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chatbot_logs: {
+        Row: {
+          created_at: string
+          id: string
+          query: string
+          response: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          query: string
+          response: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          query?: string
+          response?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chatbot_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      complaints: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          description: string
+          id: string
+          photo_url: string | null
+          resident_id: string
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["complaint_status"]
+          title: string
+          updated_at: string
+          ward_id: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          photo_url?: string | null
+          resident_id: string
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["complaint_status"]
+          title: string
+          updated_at?: string
+          ward_id: string
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          photo_url?: string | null
+          resident_id?: string
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["complaint_status"]
+          title?: string
+          updated_at?: string
+          ward_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "complaints_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "complaints_resident_id_fkey"
+            columns: ["resident_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "complaints_ward_id_fkey"
+            columns: ["ward_id"]
+            isOneToOne: false
+            referencedRelation: "wards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          title: string
+          type: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          title: string
+          type?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          title?: string
+          type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          auth_user_id: string
+          created_at: string
+          email: string | null
+          google_id: string | null
+          id: string
+          name: string
+          phone_number: string | null
+          profile_image_url: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+          ward_id: string | null
+        }
+        Insert: {
+          auth_user_id: string
+          created_at?: string
+          email?: string | null
+          google_id?: string | null
+          id?: string
+          name: string
+          phone_number?: string | null
+          profile_image_url?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          ward_id?: string | null
+        }
+        Update: {
+          auth_user_id?: string
+          created_at?: string
+          email?: string | null
+          google_id?: string | null
+          id?: string
+          name?: string
+          phone_number?: string | null
+          profile_image_url?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          ward_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "users_ward_id_fkey"
+            columns: ["ward_id"]
+            isOneToOne: false
+            referencedRelation: "wards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wards: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          zone: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          zone: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          zone?: string
+        }
+        Relationships: []
+      }
+      waste_collections: {
+        Row: {
+          collector_id: string
+          created_at: string
+          date: string
+          id: string
+          location: string | null
+          notes: string | null
+          status: Database["public"]["Enums"]["collection_status"]
+          updated_at: string
+          ward_id: string
+          waste_type: Database["public"]["Enums"]["waste_type"]
+        }
+        Insert: {
+          collector_id: string
+          created_at?: string
+          date?: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          status?: Database["public"]["Enums"]["collection_status"]
+          updated_at?: string
+          ward_id: string
+          waste_type: Database["public"]["Enums"]["waste_type"]
+        }
+        Update: {
+          collector_id?: string
+          created_at?: string
+          date?: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          status?: Database["public"]["Enums"]["collection_status"]
+          updated_at?: string
+          ward_id?: string
+          waste_type?: Database["public"]["Enums"]["waste_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "waste_collections_collector_id_fkey"
+            columns: ["collector_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "waste_collections_ward_id_fkey"
+            columns: ["ward_id"]
+            isOneToOne: false
+            referencedRelation: "wards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
+      get_current_user_ward: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
-      [_ in never]: never
+      collection_status: "collected" | "pending"
+      complaint_status: "open" | "in_progress" | "resolved"
+      user_role: "admin" | "collector" | "resident"
+      waste_type: "wet" | "dry" | "hazardous"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +494,11 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      collection_status: ["collected", "pending"],
+      complaint_status: ["open", "in_progress", "resolved"],
+      user_role: ["admin", "collector", "resident"],
+      waste_type: ["wet", "dry", "hazardous"],
+    },
   },
 } as const
