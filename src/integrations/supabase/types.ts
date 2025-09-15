@@ -224,6 +224,33 @@ export type Database = {
           },
         ]
       }
+      phone_verifications: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          otp_code: string
+          phone_number: string
+          verified: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          otp_code: string
+          phone_number: string
+          verified?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          otp_code?: string
+          phone_number?: string
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           auth_user_id: string
