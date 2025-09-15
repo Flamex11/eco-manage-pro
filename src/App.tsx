@@ -4,11 +4,17 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import AuthPage from "./pages/auth/AuthPage";
 import { AdminDashboard } from "./pages/dashboard/AdminDashboard";
 import { CollectorDashboard } from "./pages/dashboard/CollectorDashboard";
 import { ResidentDashboard } from "./pages/dashboard/ResidentDashboard";
+import { CollectionsPage } from "./pages/collections/CollectionsPage";
+import { ComplaintsPage } from "./pages/complaints/ComplaintsPage";
+import { AnalyticsPage } from "./pages/analytics/AnalyticsPage";
+import { SettingsPage } from "./pages/settings/SettingsPage";
+import { ChatBot } from "./components/chat/ChatBot";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,27 +51,79 @@ function DashboardRouter() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AuthProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route 
-              path="/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <DashboardLayout>
-                    <DashboardRouter />
-                  </DashboardLayout>
-                </ProtectedRoute>
-              } 
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/auth" element={<AuthPage />} />
+              
+              {/* Protected Routes */}
+              <Route 
+                path="/dashboard" 
+                element={
+                  <ProtectedRoute>
+                    <DashboardLayout>
+                      <DashboardRouter />
+                    </DashboardLayout>
+                  </ProtectedRoute>
+                } 
+              />
+              
+              <Route 
+                path="/collections" 
+                element={
+                  <ProtectedRoute>
+                    <DashboardLayout>
+                      <CollectionsPage />
+                    </DashboardLayout>
+                  </ProtectedRoute>
+                } 
+              />
+              
+              <Route 
+                path="/complaints" 
+                element={
+                  <ProtectedRoute>
+                    <DashboardLayout>
+                      <ComplaintsPage />
+                    </DashboardLayout>
+                  </ProtectedRoute>
+                } 
+              />
+              
+              <Route 
+                path="/analytics" 
+                element={
+                  <ProtectedRoute>
+                    <DashboardLayout>
+                      <AnalyticsPage />
+                    </DashboardLayout>
+                  </ProtectedRoute>
+                } 
+              />
+              
+              <Route 
+                path="/settings" 
+                element={
+                  <ProtectedRoute>
+                    <DashboardLayout>
+                      <SettingsPage />
+                    </DashboardLayout>
+                  </ProtectedRoute>
+                } 
+              />
+              
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            
+            {/* Global Components */}
+            <ChatBot />
+          </BrowserRouter>
+        </AuthProvider>
+      </ThemeProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
