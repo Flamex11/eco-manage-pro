@@ -162,13 +162,7 @@ export function ResidentDashboard() {
               title: e.target.value
             }))} />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="photo">Add Photo (Optional)</Label>
-              <Button variant="outline" className="w-full justify-start">
-                <Camera className="w-4 h-4 mr-2" />
-                Upload Photo
-              </Button>
-            </div>
+            
           </div>
           
           <div className="space-y-2">
