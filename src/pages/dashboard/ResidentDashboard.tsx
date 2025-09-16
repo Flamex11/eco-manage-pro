@@ -7,87 +7,82 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { MessageSquare, Calendar, Bell, Camera, CheckCircle, Clock, AlertTriangle, Package, Star, Truck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
 export function ResidentDashboard() {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [greenPoints] = useState(247); // Gamification points
-  const [complaints, setComplaints] = useState([
-    {
-      id: 1,
-      title: "Missed Collection",
-      description: "Dry waste not collected for 3 days in Sector 12",
-      status: "in_progress",
-      date: "2024-01-15",
-    },
-    {
-      id: 2,
-      title: "Overflowing Bin",
-      description: "Community bin is overflowing near the park",
-      status: "resolved",
-      date: "2024-01-10",
-    },
-  ]);
-
+  const [complaints, setComplaints] = useState([{
+    id: 1,
+    title: "Missed Collection",
+    description: "Dry waste not collected for 3 days in Sector 12",
+    status: "in_progress",
+    date: "2024-01-15"
+  }, {
+    id: 2,
+    title: "Overflowing Bin",
+    description: "Community bin is overflowing near the park",
+    status: "resolved",
+    date: "2024-01-10"
+  }]);
   const [newComplaint, setNewComplaint] = useState({
     title: "",
-    description: "",
+    description: ""
   });
-
   const handleSubmitComplaint = () => {
     if (!newComplaint.title || !newComplaint.description) {
       toast({
         title: "Incomplete form",
         description: "Please fill in all fields",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     const complaint = {
       id: complaints.length + 1,
       title: newComplaint.title,
       description: newComplaint.description,
       status: "open",
-      date: new Date().toISOString().split('T')[0],
+      date: new Date().toISOString().split('T')[0]
     };
-
     setComplaints(prev => [complaint, ...prev]);
-    setNewComplaint({ title: "", description: "" });
-    
+    setNewComplaint({
+      title: "",
+      description: ""
+    });
     toast({
       title: "Complaint submitted",
-      description: "Your complaint has been submitted and will be reviewed shortly.",
+      description: "Your complaint has been submitted and will be reviewed shortly."
     });
   };
-
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'resolved': return 'bg-success text-success-foreground';
-      case 'in_progress': return 'bg-warning text-warning-foreground';
-      default: return 'bg-destructive text-destructive-foreground';
+      case 'resolved':
+        return 'bg-success text-success-foreground';
+      case 'in_progress':
+        return 'bg-warning text-warning-foreground';
+      default:
+        return 'bg-destructive text-destructive-foreground';
     }
   };
-
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'resolved': return <CheckCircle className="w-4 h-4" />;
-      case 'in_progress': return <Clock className="w-4 h-4" />;
-      default: return <AlertTriangle className="w-4 h-4" />;
+      case 'resolved':
+        return <CheckCircle className="w-4 h-4" />;
+      case 'in_progress':
+        return <Clock className="w-4 h-4" />;
+      default:
+        return <AlertTriangle className="w-4 h-4" />;
     }
   };
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       {/* Welcome Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Hello, thank you for keeping your city clean 🌱</h1>
           <p className="text-muted-foreground">Together, we're making our community cleaner and greener</p>
         </div>
-        <Button className="gradient-primary text-white shadow-primary">
-          <Bell className="w-4 h-4 mr-2" />
-          Notifications
-        </Button>
+        
       </div>
 
       {/* Quick Actions */}
@@ -175,12 +170,10 @@ export function ResidentDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="title">Issue Title</Label>
-              <Input
-                id="title"
-                placeholder="Brief description of the issue"
-                value={newComplaint.title}
-                onChange={(e) => setNewComplaint(prev => ({ ...prev, title: e.target.value }))}
-              />
+              <Input id="title" placeholder="Brief description of the issue" value={newComplaint.title} onChange={e => setNewComplaint(prev => ({
+              ...prev,
+              title: e.target.value
+            }))} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="photo">Add Photo (Optional)</Label>
@@ -193,19 +186,13 @@ export function ResidentDashboard() {
           
           <div className="space-y-2">
             <Label htmlFor="description">Detailed Description</Label>
-            <Textarea
-              id="description"
-              placeholder="Provide detailed information about the issue..."
-              value={newComplaint.description}
-              onChange={(e) => setNewComplaint(prev => ({ ...prev, description: e.target.value }))}
-              rows={4}
-            />
+            <Textarea id="description" placeholder="Provide detailed information about the issue..." value={newComplaint.description} onChange={e => setNewComplaint(prev => ({
+            ...prev,
+            description: e.target.value
+          }))} rows={4} />
           </div>
 
-          <Button 
-            onClick={handleSubmitComplaint}
-            className="gradient-primary text-white shadow-primary"
-          >
+          <Button onClick={handleSubmitComplaint} className="gradient-primary text-white shadow-primary">
             Submit Complaint
           </Button>
         </CardContent>
@@ -219,11 +206,7 @@ export function ResidentDashboard() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {complaints.map((complaint) => (
-              <div 
-                key={complaint.id}
-                className="flex items-start justify-between p-4 rounded-lg border border-border hover:bg-muted/50 transition-quick"
-              >
+            {complaints.map(complaint => <div key={complaint.id} className="flex items-start justify-between p-4 rounded-lg border border-border hover:bg-muted/50 transition-quick">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="font-medium text-foreground">{complaint.title}</h3>
@@ -235,8 +218,7 @@ export function ResidentDashboard() {
                   <p className="text-sm text-muted-foreground mb-2">{complaint.description}</p>
                   <p className="text-xs text-muted-foreground">Submitted on {complaint.date}</p>
                 </div>
-              </div>
-            ))}
+              </div>)}
           </div>
         </CardContent>
       </Card>
@@ -249,12 +231,22 @@ export function ResidentDashboard() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {[
-              { day: "Tomorrow", type: "Dry Waste", time: "8:00 AM", color: "text-accent" },
-              { day: "Day After", type: "Wet Waste", time: "8:00 AM", color: "text-success" },
-              { day: "Friday", type: "Hazardous Waste", time: "10:00 AM", color: "text-destructive" },
-            ].map((schedule, index) => (
-              <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+            {[{
+            day: "Tomorrow",
+            type: "Dry Waste",
+            time: "8:00 AM",
+            color: "text-accent"
+          }, {
+            day: "Day After",
+            type: "Wet Waste",
+            time: "8:00 AM",
+            color: "text-success"
+          }, {
+            day: "Friday",
+            type: "Hazardous Waste",
+            time: "10:00 AM",
+            color: "text-destructive"
+          }].map((schedule, index) => <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
                 <div className="flex items-center gap-3">
                   <div className="w-3 h-3 rounded-full bg-primary"></div>
                   <div>
@@ -263,11 +255,9 @@ export function ResidentDashboard() {
                   </div>
                 </div>
                 <span className="text-sm text-muted-foreground">{schedule.time}</span>
-              </div>
-            ))}
+              </div>)}
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 }

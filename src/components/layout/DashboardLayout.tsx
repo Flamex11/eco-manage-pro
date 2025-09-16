@@ -5,16 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useAuth } from "@/contexts/AuthContext";
-
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
-
-export function DashboardLayout({ children }: DashboardLayoutProps) {
-  const { userProfile } = useAuth();
-
-  return (
-    <SidebarProvider>
+export function DashboardLayout({
+  children
+}: DashboardLayoutProps) {
+  const {
+    userProfile
+  } = useAuth();
+  return <SidebarProvider>
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
         
@@ -26,22 +26,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               
               <div className="relative max-w-md">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                <Input
-                  placeholder="Search..."
-                  className="pl-10 bg-background border-border focus:ring-primary"
-                />
+                <Input placeholder="Search..." className="pl-10 bg-background border-border focus:ring-primary" />
               </div>
             </div>
 
             <div className="flex items-center gap-3">
               <ThemeToggle />
               
-              <Button variant="ghost" size="sm" className="relative">
-                <Bell className="w-5 h-5" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full text-xs flex items-center justify-center text-destructive-foreground">
-                  3
-                </span>
-              </Button>
+              
               
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-muted-foreground">Welcome back,</span>
@@ -58,6 +50,5 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </main>
         </div>
       </div>
-    </SidebarProvider>
-  );
+    </SidebarProvider>;
 }
