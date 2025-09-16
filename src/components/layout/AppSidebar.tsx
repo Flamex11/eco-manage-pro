@@ -10,6 +10,7 @@ import {
   Bell,
   LogOut
 } from "lucide-react";
+import logoImage from "@/assets/logo.png";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -85,8 +86,8 @@ export function AppSidebar() {
         <div className="p-4 border-b border-sidebar-border">
           {!collapsed ? (
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">🌱</span>
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center p-1">
+                <img src={logoImage} alt="WSMS Logo" className="w-full h-full object-contain" />
               </div>
               <div>
                 <h2 className="font-semibold text-sidebar-foreground">WSMS</h2>
@@ -94,8 +95,8 @@ export function AppSidebar() {
               </div>
             </div>
           ) : (
-            <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center mx-auto">
-              <span className="text-white font-bold text-lg">🌱</span>
+            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center mx-auto p-1">
+              <img src={logoImage} alt="WSMS Logo" className="w-full h-full object-contain" />
             </div>
           )}
         </div>
