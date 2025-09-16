@@ -1,17 +1,18 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trash2, AlertTriangle, Users, MapPin, TrendingUp, CheckCircle } from "lucide-react";
+import { Trash2, AlertTriangle, Users, MapPin, TrendingUp, CheckCircle, FileText, Recycle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function AdminDashboard() {
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Welcome Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Monitor and manage waste collection across all wards</p>
+          <h1 className="text-3xl font-bold text-foreground">City at a glance 🌍</h1>
+          <p className="text-muted-foreground">Monitor and manage waste collection to keep our city clean and healthy</p>
         </div>
         <Button className="gradient-primary text-white shadow-primary">
+          <FileText className="w-4 h-4 mr-2" />
           Generate Report
         </Button>
       </div>
@@ -34,14 +35,14 @@ export function AdminDashboard() {
 
         <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Segregation Rate</CardTitle>
-            <CheckCircle className="h-4 w-4 text-success" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Recycling Statistics ♻️</CardTitle>
+            <Recycle className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">87.3%</div>
             <p className="text-xs text-success">
               <TrendingUp className="inline w-3 h-3 mr-1" />
-              +5.2% from last month
+              +5.2% segregation rate
             </p>
           </CardContent>
         </Card>
@@ -79,20 +80,20 @@ export function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="shadow-soft border-border/50">
           <CardHeader>
-            <CardTitle className="text-foreground">Collection Trends</CardTitle>
-            <CardDescription>Daily waste collection across all wards</CardDescription>
+            <CardTitle className="text-foreground">Waste Type Analytics</CardTitle>
+            <CardDescription>Pie chart: Waste type ratio (wet/dry/hazardous) ♻️</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-64 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg flex items-center justify-center">
-              <p className="text-muted-foreground">Chart placeholder - Collection trends will be displayed here</p>
+              <p className="text-muted-foreground">Pie chart: 45% Wet, 35% Dry, 15% Recyclable, 5% Hazardous</p>
             </div>
           </CardContent>
         </Card>
 
         <Card className="shadow-soft border-border/50">
           <CardHeader>
-            <CardTitle className="text-foreground">Ward Performance</CardTitle>
-            <CardDescription>Segregation percentage by ward</CardDescription>
+            <CardTitle className="text-foreground">Collection Trends</CardTitle>
+            <CardDescription>Line graph: Collection trends across wards</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">

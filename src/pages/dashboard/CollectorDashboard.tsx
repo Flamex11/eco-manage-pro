@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, MapPin, Clock, CheckCircle, AlertCircle, Route } from "lucide-react";
+import { Trash2, MapPin, Clock, CheckCircle, AlertCircle, Route, AlertTriangle } from "lucide-react";
 
 export function CollectorDashboard() {
   const [collections, setCollections] = useState([
@@ -59,19 +59,20 @@ export function CollectorDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Welcome Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Collection Dashboard</h1>
-          <p className="text-muted-foreground">Track your daily waste collection routes</p>
+          <h1 className="text-3xl font-bold text-foreground">Ready to make the city cleaner today? 🚛</h1>
+          <p className="text-muted-foreground">Your daily collections make our community healthier and greener</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="border-border">
-            <Route className="w-4 h-4 mr-2" />
-            View Routes
+          <Button variant="outline" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground">
+            <MapPin className="w-4 h-4 mr-2" />
+            View Map 🗺️
           </Button>
           <Button className="gradient-primary text-white shadow-primary">
-            Mark Route Complete
+            <Trash2 className="w-4 h-4 mr-2" />
+            Start Route
           </Button>
         </div>
       </div>
@@ -178,21 +179,21 @@ export function CollectorDashboard() {
         </CardContent>
       </Card>
 
-      {/* Quick Actions */}
+          {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="shadow-soft border-border/50">
           <CardHeader>
             <CardTitle className="text-foreground">Quick Actions</CardTitle>
-            <CardDescription>Common tasks and shortcuts</CardDescription>
+            <CardDescription>Report roadblocks and delays to admin</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button variant="outline" className="w-full justify-start" size="sm">
-              <MapPin className="w-4 h-4 mr-2" />
-              View Full Route Map
+            <Button variant="outline" className="w-full justify-start border-warning text-warning hover:bg-warning hover:text-warning-foreground" size="sm">
+              <AlertTriangle className="w-4 h-4 mr-2" />
+              Report Roadblock/Delay
             </Button>
             <Button variant="outline" className="w-full justify-start" size="sm">
-              <AlertCircle className="w-4 h-4 mr-2" />
-              Report Collection Issue
+              <MapPin className="w-4 h-4 mr-2" />
+              View Full Route Map 🗺️
             </Button>
             <Button variant="outline" className="w-full justify-start" size="sm">
               <Clock className="w-4 h-4 mr-2" />

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { 
   LayoutDashboard, 
-  Trash2, 
+  Recycle, 
   MessageSquare, 
   BarChart3, 
   Settings, 
@@ -36,7 +36,7 @@ const getNavigationItems = (role: string) => {
   if (role === 'admin') {
     return [
       ...baseItems,
-      { title: "Collections", url: "/collections", icon: Trash2 },
+      { title: "Collections", url: "/collections", icon: Recycle },
       { title: "Complaints", url: "/complaints", icon: MessageSquare },
       { title: "Analytics", url: "/analytics", icon: BarChart3 },
       { title: "Users", url: "/users", icon: Users },
@@ -46,7 +46,7 @@ const getNavigationItems = (role: string) => {
   } else if (role === 'collector') {
     return [
       ...baseItems,
-      { title: "Collections", url: "/collections", icon: Trash2 },
+      { title: "Collections", url: "/collections", icon: Recycle },
       { title: "Routes", url: "/routes", icon: MapPin },
       { title: "Settings", url: "/settings", icon: Settings },
     ];
@@ -86,16 +86,16 @@ export function AppSidebar() {
           {!collapsed ? (
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center">
-                <Trash2 className="w-5 h-5 text-white" />
+                <span className="text-white font-bold text-lg">🌱</span>
               </div>
               <div>
-                <h2 className="font-semibold text-sidebar-foreground">EcoManage</h2>
-                <p className="text-xs text-sidebar-foreground/60">Waste Management</p>
+                <h2 className="font-semibold text-sidebar-foreground">WSMS</h2>
+                <p className="text-xs text-sidebar-foreground/60">Clean City Companion</p>
               </div>
             </div>
           ) : (
             <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center mx-auto">
-              <Trash2 className="w-5 h-5 text-white" />
+              <span className="text-white font-bold text-lg">🌱</span>
             </div>
           )}
         </div>

@@ -5,11 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { MessageSquare, Calendar, Bell, Camera, CheckCircle, Clock, AlertTriangle } from "lucide-react";
+import { MessageSquare, Calendar, Bell, Camera, CheckCircle, Clock, AlertTriangle, Package, Star, Truck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export function ResidentDashboard() {
   const { toast } = useToast();
+  const [greenPoints] = useState(247); // Gamification points
   const [complaints, setComplaints] = useState([
     {
       id: 1,
@@ -77,20 +78,79 @@ export function ResidentDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Welcome Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Resident Portal</h1>
-          <p className="text-muted-foreground">Track your complaints and waste collection schedule</p>
+          <h1 className="text-3xl font-bold text-foreground">Hello, thank you for keeping your city clean 🌱</h1>
+          <p className="text-muted-foreground">Together, we're making our community cleaner and greener</p>
         </div>
         <Button className="gradient-primary text-white shadow-primary">
           <Bell className="w-4 h-4 mr-2" />
-          View Notifications
+          Notifications
         </Button>
       </div>
 
-      {/* Quick Stats */}
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
+          <CardHeader>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <Package className="h-5 w-5 text-primary" />
+              Request Waste Pickup
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Button className="w-full gradient-primary text-white shadow-primary">
+              <Package className="w-4 h-4 mr-2" />
+              Request Pickup 📦
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
+          <CardHeader>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-warning" />
+              Raise Complaint
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" className="w-full border-warning text-warning hover:bg-warning hover:text-warning-foreground">
+              <AlertTriangle className="w-4 h-4 mr-2" />
+              Report Issue
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Live Updates & Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Next Collection</CardTitle>
+            <Truck className="h-4 w-4 text-info" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-foreground">Tomorrow</div>
+            <p className="text-xs text-muted-foreground">
+              Dry waste at 8:00 AM • Collector: Raj Kumar
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Green Points 🌟</CardTitle>
+            <Star className="h-4 w-4 text-warning" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-foreground">{greenPoints}</div>
+            <p className="text-xs text-success">
+              Earned for responsible segregation
+            </p>
+          </CardContent>
+        </Card>
+
         <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">My Complaints</CardTitle>
@@ -100,32 +160,6 @@ export function ResidentDashboard() {
             <div className="text-2xl font-bold text-foreground">{complaints.length}</div>
             <p className="text-xs text-muted-foreground">
               {complaints.filter(c => c.status === 'resolved').length} resolved
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Next Collection</CardTitle>
-            <Calendar className="h-4 w-4 text-success" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">Tomorrow</div>
-            <p className="text-xs text-muted-foreground">
-              Dry waste • 8:00 AM
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Ward Score</CardTitle>
-            <CheckCircle className="h-4 w-4 text-accent" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">92%</div>
-            <p className="text-xs text-success">
-              Excellent segregation rate
             </p>
           </CardContent>
         </Card>
