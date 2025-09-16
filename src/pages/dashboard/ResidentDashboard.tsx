@@ -86,9 +86,9 @@ export function ResidentDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-[2px] px-0 py-[22px]">
         <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
-          <CardHeader>
+          <CardHeader className="mx-0 py-0 my-0 px-0">
             <CardTitle className="text-foreground flex items-center gap-2">
               <Package className="h-5 w-5 text-primary" />
               Request Waste Pickup
@@ -102,20 +102,7 @@ export function ResidentDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
-          <CardHeader>
-            <CardTitle className="text-foreground flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-warning" />
-              Raise Complaint
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Button variant="outline" className="w-full border-warning text-warning hover:bg-warning hover:text-warning-foreground">
-              <AlertTriangle className="w-4 h-4 mr-2" />
-              Report Issue
-            </Button>
-          </CardContent>
-        </Card>
+        
       </div>
 
       {/* Live Updates & Stats */}
