@@ -9,109 +9,94 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Trash2, Leaf, Users } from "lucide-react";
-
 export default function AuthPage() {
-  const { user, signIn, signUp, loading } = useAuth();
-  const { toast } = useToast();
+  const {
+    user,
+    signIn,
+    signUp,
+    loading
+  } = useAuth();
+  const {
+    toast
+  } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-
   const [signInData, setSignInData] = useState({
     email: "",
-    password: "",
+    password: ""
   });
-
   const [signUpData, setSignUpData] = useState({
     email: "",
     password: "",
     confirmPassword: "",
     name: "",
     role: "",
-    wardId: "",
+    wardId: ""
   });
-
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
+    return <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+      </div>;
   }
-
   if (user) {
     return <Navigate to="/dashboard" replace />;
   }
-
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
-    const { error } = await signIn(signInData.email, signInData.password);
-
+    const {
+      error
+    } = await signIn(signInData.email, signInData.password);
     if (error) {
       toast({
         title: "Sign in failed",
         description: error.message,
-        variant: "destructive",
+        variant: "destructive"
       });
     } else {
       toast({
         title: "Welcome back!",
-        description: "You have been signed in successfully.",
+        description: "You have been signed in successfully."
       });
     }
-
     setIsLoading(false);
   };
-
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (signUpData.password !== signUpData.confirmPassword) {
       toast({
         title: "Password mismatch",
         description: "Please ensure your passwords match.",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     if (!signUpData.role) {
       toast({
         title: "Role required",
         description: "Please select your role.",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     setIsLoading(true);
-
-    const { error } = await signUp(
-      signUpData.email,
-      signUpData.password,
-      signUpData.name,
-      signUpData.role,
-      signUpData.wardId || undefined
-    );
-
+    const {
+      error
+    } = await signUp(signUpData.email, signUpData.password, signUpData.name, signUpData.role, signUpData.wardId || undefined);
     if (error) {
       toast({
         title: "Sign up failed",
         description: error.message,
-        variant: "destructive",
+        variant: "destructive"
       });
     } else {
       toast({
         title: "Account created!",
-        description: "Please check your email for verification.",
+        description: "Please check your email for verification."
       });
     }
-
     setIsLoading(false);
   };
-
-  return (
-    <div className="min-h-screen gradient-hero flex items-center justify-center p-4">
+  return <div className="min-h-screen gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
         {/* Logo & Header */}
         <div className="text-center space-y-4">
@@ -119,8 +104,8 @@ export default function AuthPage() {
             <Trash2 className="w-8 h-8 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">EcoManage Pro</h1>
-            <p className="text-white/80">Waste Segregation Monitoring System</p>
+            <h1 className="text-3xl font-bold text-white">SMART WASTE COLLECTION SYSTEMS      </h1>
+            <p className="text-white/80">Waste Monitoring System</p>
           </div>
         </div>
 
@@ -159,25 +144,17 @@ export default function AuthPage() {
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="your@email.com"
-                      value={signInData.email}
-                      onChange={(e) => setSignInData(prev => ({ ...prev, email: e.target.value }))}
-                      required
-                    />
+                    <Input id="email" type="email" placeholder="your@email.com" value={signInData.email} onChange={e => setSignInData(prev => ({
+                    ...prev,
+                    email: e.target.value
+                  }))} required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={signInData.password}
-                      onChange={(e) => setSignInData(prev => ({ ...prev, password: e.target.value }))}
-                      required
-                    />
+                    <Input id="password" type="password" placeholder="••••••••" value={signInData.password} onChange={e => setSignInData(prev => ({
+                    ...prev,
+                    password: e.target.value
+                  }))} required />
                   </div>
                   <Button type="submit" className="w-full gradient-primary text-white" disabled={isLoading}>
                     {isLoading ? "Signing In..." : "Sign In"}
@@ -197,28 +174,24 @@ export default function AuthPage() {
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Full Name</Label>
-                    <Input
-                      id="name"
-                      placeholder="John Doe"
-                      value={signUpData.name}
-                      onChange={(e) => setSignUpData(prev => ({ ...prev, name: e.target.value }))}
-                      required
-                    />
+                    <Input id="name" placeholder="John Doe" value={signUpData.name} onChange={e => setSignUpData(prev => ({
+                    ...prev,
+                    name: e.target.value
+                  }))} required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="your@email.com"
-                      value={signUpData.email}
-                      onChange={(e) => setSignUpData(prev => ({ ...prev, email: e.target.value }))}
-                      required
-                    />
+                    <Input id="signup-email" type="email" placeholder="your@email.com" value={signUpData.email} onChange={e => setSignUpData(prev => ({
+                    ...prev,
+                    email: e.target.value
+                  }))} required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="role">Role</Label>
-                    <Select value={signUpData.role} onValueChange={(value) => setSignUpData(prev => ({ ...prev, role: value }))}>
+                    <Select value={signUpData.role} onValueChange={value => setSignUpData(prev => ({
+                    ...prev,
+                    role: value
+                  }))}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select your role" />
                       </SelectTrigger>
@@ -232,25 +205,17 @@ export default function AuthPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="signup-password">Password</Label>
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={signUpData.password}
-                        onChange={(e) => setSignUpData(prev => ({ ...prev, password: e.target.value }))}
-                        required
-                      />
+                      <Input id="signup-password" type="password" placeholder="••••••••" value={signUpData.password} onChange={e => setSignUpData(prev => ({
+                      ...prev,
+                      password: e.target.value
+                    }))} required />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="confirm-password">Confirm</Label>
-                      <Input
-                        id="confirm-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={signUpData.confirmPassword}
-                        onChange={(e) => setSignUpData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                        required
-                      />
+                      <Input id="confirm-password" type="password" placeholder="••••••••" value={signUpData.confirmPassword} onChange={e => setSignUpData(prev => ({
+                      ...prev,
+                      confirmPassword: e.target.value
+                    }))} required />
                     </div>
                   </div>
                   <Button type="submit" className="w-full gradient-primary text-white" disabled={isLoading}>
@@ -266,6 +231,5 @@ export default function AuthPage() {
           By continuing, you agree to our Terms of Service and Privacy Policy
         </p>
       </div>
-    </div>
-  );
+    </div>;
 }
