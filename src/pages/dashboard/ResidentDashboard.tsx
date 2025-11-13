@@ -11,29 +11,34 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 export function ResidentDashboard() {
-  const { toast } = useToast();
-  const { userProfile, refreshProfile } = useAuth();
+  const {
+    toast
+  } = useToast();
+  const {
+    userProfile,
+    refreshProfile
+  } = useAuth();
   const [greenPoints] = useState(247);
   const [isRequestingPickup, setIsRequestingPickup] = useState(false);
-  const [wards, setWards] = useState<Array<{ id: string; name: string; zone: string }>>([]);
+  const [wards, setWards] = useState<Array<{
+    id: string;
+    name: string;
+    zone: string;
+  }>>([]);
   const [selectedWard, setSelectedWard] = useState<string>("");
   const [isAssigningWard, setIsAssigningWard] = useState(false);
-
   useEffect(() => {
     fetchWards();
   }, []);
-
   const fetchWards = async () => {
-    const { data, error } = await supabase
-      .from('wards')
-      .select('*')
-      .order('name');
-    
+    const {
+      data,
+      error
+    } = await supabase.from('wards').select('*').order('name');
     if (data && !error) {
       setWards(data);
     }
   };
-
   const handleAssignWard = async () => {
     if (!selectedWard) {
       toast({
@@ -43,18 +48,15 @@ export function ResidentDashboard() {
       });
       return;
     }
-
     setIsAssigningWard(true);
     try {
-      const { error } = await supabase
-        .from('users')
-        .update({ ward_id: selectedWard })
-        .eq('auth_user_id', userProfile?.auth_user_id);
-
+      const {
+        error
+      } = await supabase.from('users').update({
+        ward_id: selectedWard
+      }).eq('auth_user_id', userProfile?.auth_user_id);
       if (error) throw error;
-
       await refreshProfile();
-      
       toast({
         title: "Ward assigned",
         description: "Your ward has been assigned successfully."
@@ -96,17 +98,13 @@ export function ResidentDashboard() {
         // Fetch wards if not already loaded
         let availableWards = wards;
         if (availableWards.length === 0) {
-          const { data } = await supabase
-            .from('wards')
-            .select('*')
-            .order('name')
-            .limit(1);
-          
+          const {
+            data
+          } = await supabase.from('wards').select('*').order('name').limit(1);
           if (data && data.length > 0) {
             availableWards = data;
           }
         }
-
         if (availableWards.length === 0) {
           toast({
             title: "No wards available",
@@ -118,16 +116,14 @@ export function ResidentDashboard() {
 
         // Assign first available ward
         const firstWard = availableWards[0];
-        const { error: updateError } = await supabase
-          .from('users')
-          .update({ ward_id: firstWard.id })
-          .eq('auth_user_id', userProfile?.auth_user_id);
-
+        const {
+          error: updateError
+        } = await supabase.from('users').update({
+          ward_id: firstWard.id
+        }).eq('auth_user_id', userProfile?.auth_user_id);
         if (updateError) throw updateError;
-
         await refreshProfile();
         wardId = firstWard.id;
-
         toast({
           title: "Ward auto-assigned",
           description: `Assigned to ${firstWard.name} - ${firstWard.zone}`
@@ -135,7 +131,9 @@ export function ResidentDashboard() {
       }
 
       // Create pickup request
-      const { error } = await supabase.from('waste_collections').insert({
+      const {
+        error
+      } = await supabase.from('waste_collections').insert({
         collector_id: null,
         ward_id: wardId,
         date: new Date().toISOString(),
@@ -143,9 +141,7 @@ export function ResidentDashboard() {
         status: 'pending',
         location: 'Resident pickup request'
       });
-
       if (error) throw error;
-
       toast({
         title: "Pickup requested",
         description: "Your waste pickup request has been submitted successfully."
@@ -160,7 +156,6 @@ export function ResidentDashboard() {
       setIsRequestingPickup(false);
     }
   };
-
   const handleSubmitComplaint = () => {
     if (!newComplaint.title || !newComplaint.description) {
       toast({
@@ -221,17 +216,13 @@ export function ResidentDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-[2px] px-0 py-[22px]">
         <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
           <CardHeader className="mx-0 py-0 my-0 px-0">
-            <CardTitle className="text-foreground flex items-center gap-2 mx-0 py-[22px] px-[222px]">
+            <CardTitle className="text-foreground flex items-center gap-2 mx-[22px] my-0 py-0 px-[2px]">
               <Package className="h-5 w-5 text-primary" />
               Request Waste Pickup
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Button 
-              onClick={handleRequestPickup}
-              disabled={isRequestingPickup}
-              className="w-full gradient-primary text-white shadow-primary"
-            >
+            <Button onClick={handleRequestPickup} disabled={isRequestingPickup} className="w-full gradient-primary text-white shadow-primary">
               <Package className="w-4 h-4 mr-2" />
               {isRequestingPickup ? "Requesting..." : "Request Pickup 📦"}
             </Button>
