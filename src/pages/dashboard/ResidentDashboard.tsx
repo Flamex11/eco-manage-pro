@@ -87,20 +87,57 @@ export function ResidentDashboard() {
     description: ""
   });
   const handleRequestPickup = async () => {
-    if (!userProfile?.ward_id) {
-      toast({
-        title: "Ward not assigned",
-        description: "Please contact admin to assign you to a ward.",
-        variant: "destructive"
-      });
-      return;
-    }
-
     setIsRequestingPickup(true);
     try {
+      let wardId = userProfile?.ward_id;
+
+      // Auto-assign ward if not assigned
+      if (!wardId) {
+        // Fetch wards if not already loaded
+        let availableWards = wards;
+        if (availableWards.length === 0) {
+          const { data } = await supabase
+            .from('wards')
+            .select('*')
+            .order('name')
+            .limit(1);
+          
+          if (data && data.length > 0) {
+            availableWards = data;
+          }
+        }
+
+        if (availableWards.length === 0) {
+          toast({
+            title: "No wards available",
+            description: "Please contact admin to set up wards.",
+            variant: "destructive"
+          });
+          return;
+        }
+
+        // Assign first available ward
+        const firstWard = availableWards[0];
+        const { error: updateError } = await supabase
+          .from('users')
+          .update({ ward_id: firstWard.id })
+          .eq('auth_user_id', userProfile?.auth_user_id);
+
+        if (updateError) throw updateError;
+
+        await refreshProfile();
+        wardId = firstWard.id;
+
+        toast({
+          title: "Ward auto-assigned",
+          description: `Assigned to ${firstWard.name} - ${firstWard.zone}`
+        });
+      }
+
+      // Create pickup request
       const { error } = await supabase.from('waste_collections').insert({
         collector_id: null,
-        ward_id: userProfile.ward_id,
+        ward_id: wardId,
         date: new Date().toISOString(),
         waste_type: 'dry',
         status: 'pending',
@@ -180,70 +217,30 @@ export function ResidentDashboard() {
         
       </div>
 
-      {/* Ward Assignment (if not assigned) */}
-      {!userProfile?.ward_id && (
-        <Card className="shadow-soft border-border/50 bg-warning/10">
-          <CardHeader>
-            <CardTitle className="text-foreground flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-warning" />
-              Assign Your Ward
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-[2px] px-0 py-[22px]">
+        <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
+          <CardHeader className="mx-0 py-0 my-0 px-0">
+            <CardTitle className="text-foreground flex items-center gap-2 mx-0 py-[22px] px-[222px]">
+              <Package className="h-5 w-5 text-primary" />
+              Request Waste Pickup
             </CardTitle>
-            <CardDescription>Please select your ward to start using the waste management services</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="ward">Select Ward</Label>
-              <Select value={selectedWard} onValueChange={setSelectedWard}>
-                <SelectTrigger id="ward">
-                  <SelectValue placeholder="Choose your ward" />
-                </SelectTrigger>
-                <SelectContent>
-                  {wards.map((ward) => (
-                    <SelectItem key={ward.id} value={ward.id}>
-                      {ward.name} - {ward.zone}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <CardContent>
             <Button 
-              onClick={handleAssignWard}
-              disabled={isAssigningWard || !selectedWard}
+              onClick={handleRequestPickup}
+              disabled={isRequestingPickup}
               className="w-full gradient-primary text-white shadow-primary"
             >
-              {isAssigningWard ? "Assigning..." : "Assign Ward"}
+              <Package className="w-4 h-4 mr-2" />
+              {isRequestingPickup ? "Requesting..." : "Request Pickup 📦"}
             </Button>
           </CardContent>
         </Card>
-      )}
-
-      {/* Quick Actions */}
-      {userProfile?.ward_id && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-[2px] px-0 py-[22px]">
-          <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
-            <CardHeader className="mx-0 py-0 my-0 px-0">
-              <CardTitle className="text-foreground flex items-center gap-2 mx-0 py-[22px] px-[222px]">
-                <Package className="h-5 w-5 text-primary" />
-                Request Waste Pickup
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                onClick={handleRequestPickup}
-                disabled={isRequestingPickup}
-                className="w-full gradient-primary text-white shadow-primary"
-              >
-                <Package className="w-4 h-4 mr-2" />
-                {isRequestingPickup ? "Requesting..." : "Request Pickup 📦"}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      </div>
 
       {/* Live Updates & Stats */}
-      {userProfile?.ward_id && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Next Collection</CardTitle>
@@ -282,12 +279,10 @@ export function ResidentDashboard() {
             </p>
           </CardContent>
         </Card>
-        </div>
-      )}
+      </div>
 
       {/* Submit New Complaint */}
-      {userProfile?.ward_id && (
-        <Card className="shadow-soft border-border/50">
+      <Card className="shadow-soft border-border/50">
         <CardHeader>
           <CardTitle className="text-foreground">Submit New Complaint</CardTitle>
           <CardDescription>Report issues with waste collection or management</CardDescription>
@@ -315,12 +310,10 @@ export function ResidentDashboard() {
             Submit Complaint
           </Button>
         </CardContent>
-        </Card>
-      )}
+      </Card>
 
       {/* My Complaints */}
-      {userProfile?.ward_id && (
-        <Card className="shadow-soft border-border/50">
+      <Card className="shadow-soft border-border/50">
         <CardHeader>
           <CardTitle className="text-foreground">My Complaints</CardTitle>
           <CardDescription>Track the status of your submitted complaints</CardDescription>
@@ -342,12 +335,10 @@ export function ResidentDashboard() {
               </div>)}
           </div>
         </CardContent>
-        </Card>
-      )}
+      </Card>
 
       {/* Collection Schedule */}
-      {userProfile?.ward_id && (
-        <Card className="shadow-soft border-border/50">
+      <Card className="shadow-soft border-border/50">
         <CardHeader>
           <CardTitle className="text-foreground">Collection Schedule</CardTitle>
           <CardDescription>Upcoming waste collection in your area</CardDescription>
@@ -381,7 +372,6 @@ export function ResidentDashboard() {
               </div>)}
           </div>
         </CardContent>
-        </Card>
-      )}
+      </Card>
     </div>;
 }
