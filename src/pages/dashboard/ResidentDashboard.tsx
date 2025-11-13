@@ -7,11 +7,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { MessageSquare, Calendar, Bell, Camera, CheckCircle, Clock, AlertTriangle, Package, Star, Truck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 export function ResidentDashboard() {
-  const {
-    toast
-  } = useToast();
-  const [greenPoints] = useState(247); // Gamification points
+  const { toast } = useToast();
+  const { userProfile } = useAuth();
+  const [greenPoints] = useState(247);
+  const [isRequestingPickup, setIsRequestingPickup] = useState(false);
   const [complaints, setComplaints] = useState([{
     id: 1,
     title: "Missed Collection",
@@ -29,6 +31,44 @@ export function ResidentDashboard() {
     title: "",
     description: ""
   });
+  const handleRequestPickup = async () => {
+    if (!userProfile?.ward_id) {
+      toast({
+        title: "Ward not assigned",
+        description: "Please contact admin to assign you to a ward.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsRequestingPickup(true);
+    try {
+      const { error } = await supabase.from('waste_collections').insert({
+        collector_id: null,
+        ward_id: userProfile.ward_id,
+        date: new Date().toISOString(),
+        waste_type: 'dry',
+        status: 'pending',
+        location: 'Resident pickup request'
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Pickup requested",
+        description: "Your waste pickup request has been submitted successfully."
+      });
+    } catch (error) {
+      toast({
+        title: "Request failed",
+        description: "Failed to submit pickup request. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsRequestingPickup(false);
+    }
+  };
+
   const handleSubmitComplaint = () => {
     if (!newComplaint.title || !newComplaint.description) {
       toast({
@@ -95,9 +135,13 @@ export function ResidentDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Button className="w-full gradient-primary text-white shadow-primary">
+            <Button 
+              onClick={handleRequestPickup}
+              disabled={isRequestingPickup}
+              className="w-full gradient-primary text-white shadow-primary"
+            >
               <Package className="w-4 h-4 mr-2" />
-              Request Pickup 📦
+              {isRequestingPickup ? "Requesting..." : "Request Pickup 📦"}
             </Button>
           </CardContent>
         </Card>
