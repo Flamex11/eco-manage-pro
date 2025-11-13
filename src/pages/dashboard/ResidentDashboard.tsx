@@ -1,19 +1,74 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { MessageSquare, Calendar, Bell, Camera, CheckCircle, Clock, AlertTriangle, Package, Star, Truck } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MessageSquare, Calendar, Bell, Camera, CheckCircle, Clock, AlertTriangle, Package, Star, Truck, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 export function ResidentDashboard() {
   const { toast } = useToast();
-  const { userProfile } = useAuth();
+  const { userProfile, refreshProfile } = useAuth();
   const [greenPoints] = useState(247);
   const [isRequestingPickup, setIsRequestingPickup] = useState(false);
+  const [wards, setWards] = useState<Array<{ id: string; name: string; zone: string }>>([]);
+  const [selectedWard, setSelectedWard] = useState<string>("");
+  const [isAssigningWard, setIsAssigningWard] = useState(false);
+
+  useEffect(() => {
+    fetchWards();
+  }, []);
+
+  const fetchWards = async () => {
+    const { data, error } = await supabase
+      .from('wards')
+      .select('*')
+      .order('name');
+    
+    if (data && !error) {
+      setWards(data);
+    }
+  };
+
+  const handleAssignWard = async () => {
+    if (!selectedWard) {
+      toast({
+        title: "No ward selected",
+        description: "Please select a ward to continue.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsAssigningWard(true);
+    try {
+      const { error } = await supabase
+        .from('users')
+        .update({ ward_id: selectedWard })
+        .eq('auth_user_id', userProfile?.auth_user_id);
+
+      if (error) throw error;
+
+      await refreshProfile();
+      
+      toast({
+        title: "Ward assigned",
+        description: "Your ward has been assigned successfully."
+      });
+    } catch (error) {
+      toast({
+        title: "Assignment failed",
+        description: "Failed to assign ward. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsAssigningWard(false);
+    }
+  };
   const [complaints, setComplaints] = useState([{
     id: 1,
     title: "Missed Collection",
@@ -125,32 +180,70 @@ export function ResidentDashboard() {
         
       </div>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-[2px] px-0 py-[22px]">
-        <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
-          <CardHeader className="mx-0 py-0 my-0 px-0">
-            <CardTitle className="text-foreground flex items-center gap-2 mx-0 py-[22px] px-[222px]">
-              <Package className="h-5 w-5 text-primary" />
-              Request Waste Pickup
+      {/* Ward Assignment (if not assigned) */}
+      {!userProfile?.ward_id && (
+        <Card className="shadow-soft border-border/50 bg-warning/10">
+          <CardHeader>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <MapPin className="h-5 w-5 text-warning" />
+              Assign Your Ward
             </CardTitle>
+            <CardDescription>Please select your ward to start using the waste management services</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="ward">Select Ward</Label>
+              <Select value={selectedWard} onValueChange={setSelectedWard}>
+                <SelectTrigger id="ward">
+                  <SelectValue placeholder="Choose your ward" />
+                </SelectTrigger>
+                <SelectContent>
+                  {wards.map((ward) => (
+                    <SelectItem key={ward.id} value={ward.id}>
+                      {ward.name} - {ward.zone}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <Button 
-              onClick={handleRequestPickup}
-              disabled={isRequestingPickup}
+              onClick={handleAssignWard}
+              disabled={isAssigningWard || !selectedWard}
               className="w-full gradient-primary text-white shadow-primary"
             >
-              <Package className="w-4 h-4 mr-2" />
-              {isRequestingPickup ? "Requesting..." : "Request Pickup 📦"}
+              {isAssigningWard ? "Assigning..." : "Assign Ward"}
             </Button>
           </CardContent>
         </Card>
+      )}
 
-        
-      </div>
+      {/* Quick Actions */}
+      {userProfile?.ward_id && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-[2px] px-0 py-[22px]">
+          <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
+            <CardHeader className="mx-0 py-0 my-0 px-0">
+              <CardTitle className="text-foreground flex items-center gap-2 mx-0 py-[22px] px-[222px]">
+                <Package className="h-5 w-5 text-primary" />
+                Request Waste Pickup
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={handleRequestPickup}
+                disabled={isRequestingPickup}
+                className="w-full gradient-primary text-white shadow-primary"
+              >
+                <Package className="w-4 h-4 mr-2" />
+                {isRequestingPickup ? "Requesting..." : "Request Pickup 📦"}
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Live Updates & Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {userProfile?.ward_id && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Next Collection</CardTitle>
@@ -189,10 +282,12 @@ export function ResidentDashboard() {
             </p>
           </CardContent>
         </Card>
-      </div>
+        </div>
+      )}
 
       {/* Submit New Complaint */}
-      <Card className="shadow-soft border-border/50">
+      {userProfile?.ward_id && (
+        <Card className="shadow-soft border-border/50">
         <CardHeader>
           <CardTitle className="text-foreground">Submit New Complaint</CardTitle>
           <CardDescription>Report issues with waste collection or management</CardDescription>
@@ -206,7 +301,6 @@ export function ResidentDashboard() {
               title: e.target.value
             }))} />
             </div>
-            
           </div>
           
           <div className="space-y-2">
@@ -221,10 +315,12 @@ export function ResidentDashboard() {
             Submit Complaint
           </Button>
         </CardContent>
-      </Card>
+        </Card>
+      )}
 
       {/* My Complaints */}
-      <Card className="shadow-soft border-border/50">
+      {userProfile?.ward_id && (
+        <Card className="shadow-soft border-border/50">
         <CardHeader>
           <CardTitle className="text-foreground">My Complaints</CardTitle>
           <CardDescription>Track the status of your submitted complaints</CardDescription>
@@ -246,10 +342,12 @@ export function ResidentDashboard() {
               </div>)}
           </div>
         </CardContent>
-      </Card>
+        </Card>
+      )}
 
       {/* Collection Schedule */}
-      <Card className="shadow-soft border-border/50">
+      {userProfile?.ward_id && (
+        <Card className="shadow-soft border-border/50">
         <CardHeader>
           <CardTitle className="text-foreground">Collection Schedule</CardTitle>
           <CardDescription>Upcoming waste collection in your area</CardDescription>
@@ -283,6 +381,7 @@ export function ResidentDashboard() {
               </div>)}
           </div>
         </CardContent>
-      </Card>
+        </Card>
+      )}
     </div>;
 }
