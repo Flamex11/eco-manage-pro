@@ -7,7 +7,6 @@ import {
   Settings, 
   Users,
   MapPin,
-  Bell,
   LogOut
 } from "lucide-react";
 import logoImage from "@/assets/logo.png";
@@ -55,7 +54,6 @@ const getNavigationItems = (role: string) => {
     return [
       ...baseItems,
       { title: "Complaints", url: "/complaints", icon: MessageSquare },
-      { title: "Notifications", url: "/notifications", icon: Bell },
       { title: "Settings", url: "/settings", icon: Settings },
     ];
   }
