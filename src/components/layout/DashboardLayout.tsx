@@ -1,6 +1,6 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
-import { Bell, Search } from "lucide-react";
+import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -25,8 +25,8 @@ export function DashboardLayout({
               <SidebarTrigger className="transition-quick hover:bg-accent/10" />
               
               <div className="relative max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                <Input placeholder="Search..." className="pl-10 bg-background border-border focus:ring-primary" />
+                
+                
               </div>
             </div>
 
