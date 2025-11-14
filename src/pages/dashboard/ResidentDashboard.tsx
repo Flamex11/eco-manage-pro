@@ -13,8 +13,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 export function ResidentDashboard() {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const { userProfile, refreshProfile } = useAuth();
+  const {
+    toast
+  } = useToast();
+  const {
+    userProfile,
+    refreshProfile
+  } = useAuth();
   const [greenPoints] = useState(247);
   const [complaints, setComplaints] = useState([{
     id: 1,
@@ -93,7 +98,7 @@ export function ResidentDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-[2px] px-0 py-[22px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-0 py-[22px] mx-[4px]">
         <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
           <CardHeader className="mx-0 py-0 my-0 px-0">
             <CardTitle className="text-foreground flex items-center gap-2 mx-[22px] my-0 py-0 px-[2px]">
