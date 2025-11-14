@@ -36,8 +36,8 @@ export function DashboardLayout({
               
               
               <div className="flex items-center gap-2 text-sm">
-                <span className="text-3xl text-yellow-300 font-light text-center">Welcome back,</span>
-                <span className="font-bold text-center text-slate-950 px-[22px] py-[2px] mx-[2px] my-[2px]">{userProfile?.name}</span>
+                <span className="font-mono text-sky-500 font-bold text-justify text-3xl">Welcome </span>
+                <span className="px-[22px] py-[2px] mx-[2px] my-[2px] font-extrabold font-serif text-emerald-500 text-justify">{userProfile?.name}</span>
               </div>
             </div>
           </header>
