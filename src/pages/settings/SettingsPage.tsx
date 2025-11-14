@@ -11,121 +11,116 @@ import { Settings, Bell, Shield, User, Upload, Save } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-
 export function SettingsPage() {
-  const { userProfile, refreshProfile } = useAuth();
-  const { toast } = useToast();
+  const {
+    userProfile,
+    refreshProfile
+  } = useAuth();
+  const {
+    toast
+  } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: userProfile?.name || '',
     email: userProfile?.email || '',
-    phone_number: userProfile?.phone_number || '',
+    phone_number: userProfile?.phone_number || ''
   });
   const [notifications, setNotifications] = useState({
     email: true,
     push: true,
-    sms: false,
+    sms: false
   });
-
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
-
   const handleNotificationChange = (type: keyof typeof notifications, value: boolean) => {
-    setNotifications(prev => ({ ...prev, [type]: value }));
+    setNotifications(prev => ({
+      ...prev,
+      [type]: value
+    }));
   };
-
   const handleSaveProfile = async () => {
     if (!userProfile) return;
-
     setLoading(true);
     try {
-      const { error } = await supabase
-        .from('users')
-        .update({
-          name: formData.name,
-          phone_number: formData.phone_number,
-        })
-        .eq('id', userProfile.id);
-
+      const {
+        error
+      } = await supabase.from('users').update({
+        name: formData.name,
+        phone_number: formData.phone_number
+      }).eq('id', userProfile.id);
       if (error) {
         throw error;
       }
-
       await refreshProfile();
       toast({
         title: "Profile updated",
-        description: "Your profile has been saved successfully",
+        description: "Your profile has been saved successfully"
       });
     } catch (error: any) {
       toast({
         title: "Error",
         description: error.message || "Failed to update profile",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setLoading(false);
     }
   };
-
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !userProfile) return;
-
     if (file.size > 5 * 1024 * 1024) {
       toast({
         title: "File too large",
         description: "Please select an image smaller than 5MB",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     setLoading(true);
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${userProfile.id}-${Date.now()}.${fileExt}`;
       const filePath = `profiles/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('profile-images')
-        .upload(filePath, file);
-
+      const {
+        error: uploadError
+      } = await supabase.storage.from('profile-images').upload(filePath, file);
       if (uploadError) {
         throw uploadError;
       }
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('profile-images')
-        .getPublicUrl(filePath);
-
-      const { error: updateError } = await supabase
-        .from('users')
-        .update({ profile_image_url: publicUrl })
-        .eq('id', userProfile.id);
-
+      const {
+        data: {
+          publicUrl
+        }
+      } = supabase.storage.from('profile-images').getPublicUrl(filePath);
+      const {
+        error: updateError
+      } = await supabase.from('users').update({
+        profile_image_url: publicUrl
+      }).eq('id', userProfile.id);
       if (updateError) {
         throw updateError;
       }
-
       await refreshProfile();
       toast({
         title: "Avatar updated",
-        description: "Your profile picture has been updated successfully",
+        description: "Your profile picture has been updated successfully"
       });
     } catch (error: any) {
       toast({
         title: "Error",
         description: error.message || "Failed to update avatar",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setLoading(false);
     }
   };
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       {/* Page Header */}
       <div className="flex items-center gap-4">
         <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center">
@@ -158,13 +153,7 @@ export function SettingsPage() {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAvatarUpload}
-                    className="hidden"
-                    id="avatar-upload"
-                  />
+                  <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" id="avatar-upload" />
                   <label htmlFor="avatar-upload">
                     <Button variant="outline" className="cursor-pointer" asChild>
                       <span>
@@ -185,53 +174,28 @@ export function SettingsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
-                    className="bg-background border-border focus:ring-primary"
-                  />
+                  <Input id="name" value={formData.name} onChange={e => handleInputChange('name', e.target.value)} className="bg-background border-border focus:ring-primary" />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    disabled
-                    className="bg-muted border-border cursor-not-allowed"
-                  />
+                  <Input id="email" type="email" value={formData.email} disabled className="bg-muted border-border cursor-not-allowed" />
                   <p className="text-xs text-muted-foreground">Email cannot be changed</p>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    value={formData.phone_number}
-                    onChange={(e) => handleInputChange('phone_number', e.target.value)}
-                    className="bg-background border-border focus:ring-primary"
-                  />
+                  <Input id="phone" value={formData.phone_number} onChange={e => handleInputChange('phone_number', e.target.value)} className="bg-background border-border focus:ring-primary" />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="role">Role</Label>
-                  <Input
-                    id="role"
-                    value={userProfile?.role}
-                    disabled
-                    className="bg-muted border-border cursor-not-allowed capitalize"
-                  />
+                  <Input id="role" value={userProfile?.role} disabled className="bg-muted border-border cursor-not-allowed capitalize" />
                   <p className="text-xs text-muted-foreground">Role cannot be changed</p>
                 </div>
               </div>
 
-              <Button 
-                onClick={handleSaveProfile} 
-                disabled={loading}
-                className="gradient-primary text-white shadow-primary"
-              >
+              <Button onClick={handleSaveProfile} disabled={loading} className="gradient-primary text-white shadow-primary">
                 <Save className="w-4 h-4 mr-2" />
                 {loading ? 'Saving...' : 'Save Changes'}
               </Button>
@@ -253,10 +217,7 @@ export function SettingsPage() {
                   <p className="font-medium text-foreground">Email Notifications</p>
                   <p className="text-sm text-muted-foreground">Receive updates via email</p>
                 </div>
-                <Switch
-                  checked={notifications.email}
-                  onCheckedChange={(value) => handleNotificationChange('email', value)}
-                />
+                <Switch checked={notifications.email} onCheckedChange={value => handleNotificationChange('email', value)} />
               </div>
 
               <Separator />
@@ -266,10 +227,7 @@ export function SettingsPage() {
                   <p className="font-medium text-foreground">Push Notifications</p>
                   <p className="text-sm text-muted-foreground">Browser push notifications</p>
                 </div>
-                <Switch
-                  checked={notifications.push}
-                  onCheckedChange={(value) => handleNotificationChange('push', value)}
-                />
+                <Switch checked={notifications.push} onCheckedChange={value => handleNotificationChange('push', value)} />
               </div>
 
               <Separator />
@@ -279,10 +237,7 @@ export function SettingsPage() {
                   <p className="font-medium text-foreground">SMS Notifications</p>
                   <p className="text-sm text-muted-foreground">Text message alerts</p>
                 </div>
-                <Switch
-                  checked={notifications.sms}
-                  onCheckedChange={(value) => handleNotificationChange('sms', value)}
-                />
+                <Switch checked={notifications.sms} onCheckedChange={value => handleNotificationChange('sms', value)} />
               </div>
             </CardContent>
           </Card>
@@ -291,10 +246,7 @@ export function SettingsPage() {
         {/* App Settings Sidebar */}
         <div className="space-y-6">
           <Card className="shadow-soft border-border/50">
-            <CardHeader>
-              <CardTitle className="text-foreground">Appearance</CardTitle>
-              <CardDescription>Customize the app appearance</CardDescription>
-            </CardHeader>
+            
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -307,24 +259,8 @@ export function SettingsPage() {
           </Card>
 
           <Card className="shadow-soft border-border/50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-foreground">
-                <Shield className="w-5 h-5 text-primary" />
-                Security
-              </CardTitle>
-              <CardDescription>Account security settings</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button variant="outline" className="w-full justify-start">
-                Change Password
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                Two-Factor Authentication
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                Login Sessions
-              </Button>
-            </CardContent>
+            
+            
           </Card>
 
           <Card className="shadow-soft border-border/50">
@@ -346,6 +282,5 @@ export function SettingsPage() {
           </Card>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
