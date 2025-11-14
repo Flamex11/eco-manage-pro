@@ -98,7 +98,7 @@ export function ResidentDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-neutral-50 mx-0 my-0 px-0 py-[12px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-neutral-50 mx-[10px] my-[10px] px-[10px] py-[10px]">
         <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth mx-[10px] my-[10px] py-[10px] px-[10px]">
           <CardHeader className="py-0 my-0 px-0 mx-0">
             <CardTitle className="text-foreground flex items-center gap-2 py-0 my-[2px] px-[11px] mx-0">
