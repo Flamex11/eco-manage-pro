@@ -98,9 +98,9 @@ export function ResidentDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-px px-px mx-[8px] py-[2px]">
-        <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth">
-          <CardHeader className="mx-0 py-0 my-0 px-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-px px-px mx-[8px] py-[2px] bg-neutral-800">
+        <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth mx-0 my-0 px-0">
+          <CardHeader className="py-0 my-0 px-0 mx-0">
             <CardTitle className="text-foreground flex items-center gap-2 py-0 mx-0 px-0 my-[20px]">
               <Package className="h-5 w-5 text-primary" />
               Request Waste Pickup
