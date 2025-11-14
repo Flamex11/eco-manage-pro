@@ -98,10 +98,10 @@ export function ResidentDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-px px-px bg-neutral-50 mx-0 py-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-neutral-50 mx-[12px] px-[11px] py-[12px] my-[22px]">
         <Card className="shadow-soft border-border/50 hover:shadow-medium transition-smooth mx-0 my-0 px-0">
           <CardHeader className="py-0 my-0 px-0 mx-0">
-            <CardTitle className="text-foreground flex items-center gap-2 py-0 mx-0 px-0 my-[20px]">
+            <CardTitle className="text-foreground flex items-center gap-2 py-0 my-[2px] px-[11px] mx-0">
               <Package className="h-5 w-5 text-primary" />
               Request Waste Pickup
             </CardTitle>
