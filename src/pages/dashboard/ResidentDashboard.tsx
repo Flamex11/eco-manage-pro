@@ -106,8 +106,8 @@ export function ResidentDashboard() {
               Request Waste Pickup
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <Button onClick={handleRequestPickup} className="w-full gradient-primary text-white shadow-primary">
+          <CardContent className="px-px mx-[10px] my-0 py-px">
+            <Button onClick={handleRequestPickup} className="w-full gradient-primary shadow-primary text-red-50 bg-red-600 hover:bg-red-500 text-lg">
               <Package className="w-4 h-4 mr-2" />
               Request Pickup 📦
             </Button>
