@@ -32,8 +32,8 @@ export const usePhoneAuth = () => {
       }
 
       // In a real app, you would send the OTP via SMS
-      // For demo purposes, we'll log it to console
-      console.log(`OTP for ${phoneNumber}: ${otpCode}`);
+      // OTP codes should never be logged to console in production
+      // TODO: Implement SMS delivery service (Twilio, AWS SNS, etc.)
       
       return { success: true };
     } catch (error) {
