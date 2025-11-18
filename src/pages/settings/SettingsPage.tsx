@@ -11,6 +11,7 @@ import { Settings, Bell, Shield, User, Upload, Save } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { SupportChatBot } from "@/components/support/SupportChatBot";
 export function SettingsPage() {
   const {
     userProfile,
@@ -31,6 +32,7 @@ export function SettingsPage() {
     push: true,
     sms: false
   });
+  const [chatMode, setChatMode] = useState<'help' | 'support' | 'issue' | null>(null);
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
@@ -270,18 +272,36 @@ export function SettingsPage() {
               <CardDescription>Get help and support</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => setChatMode('help')}
+              >
                 Help Center
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => setChatMode('support')}
+              >
                 Contact Support
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => setChatMode('issue')}
+              >
                 Report an Issue
               </Button>
             </CardContent>
           </Card>
         </div>
       </div>
+
+      <SupportChatBot
+        isOpen={chatMode !== null}
+        onClose={() => setChatMode(null)}
+        mode={chatMode || 'help'}
+      />
     </div>;
 }
