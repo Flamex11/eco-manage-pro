@@ -324,7 +324,7 @@ export type Database = {
       }
       waste_collections: {
         Row: {
-          collector_id: string
+          collector_id: string | null
           created_at: string
           date: string
           id: string
@@ -336,7 +336,7 @@ export type Database = {
           waste_type: Database["public"]["Enums"]["waste_type"]
         }
         Insert: {
-          collector_id: string
+          collector_id?: string | null
           created_at?: string
           date?: string
           id?: string
@@ -348,7 +348,7 @@ export type Database = {
           waste_type: Database["public"]["Enums"]["waste_type"]
         }
         Update: {
-          collector_id?: string
+          collector_id?: string | null
           created_at?: string
           date?: string
           id?: string
@@ -382,13 +382,10 @@ export type Database = {
     }
     Functions: {
       get_current_user_role: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
-      get_current_user_ward: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      get_current_user_ward: { Args: never; Returns: string }
     }
     Enums: {
       collection_status: "collected" | "pending"
