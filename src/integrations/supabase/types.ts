@@ -251,6 +251,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           auth_user_id: string
@@ -261,7 +282,6 @@ export type Database = {
           name: string
           phone_number: string | null
           profile_image_url: string | null
-          role: Database["public"]["Enums"]["user_role"]
           updated_at: string
           ward_id: string | null
         }
@@ -274,7 +294,6 @@ export type Database = {
           name: string
           phone_number?: string | null
           profile_image_url?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string
           ward_id?: string | null
         }
@@ -287,7 +306,6 @@ export type Database = {
           name?: string
           phone_number?: string | null
           profile_image_url?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string
           ward_id?: string | null
         }
@@ -386,6 +404,13 @@ export type Database = {
         Returns: Database["public"]["Enums"]["user_role"]
       }
       get_current_user_ward: { Args: never; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["user_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       collection_status: "collected" | "pending"
