@@ -9,7 +9,6 @@ export interface User {
   phone_number?: string;
   email?: string;
   google_id?: string;
-  role: UserRole;
   name: string;
   ward_id?: string;
   profile_image_url?: string;

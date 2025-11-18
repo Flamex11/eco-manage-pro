@@ -61,11 +61,11 @@ const getNavigationItems = (role: string) => {
 
 export function AppSidebar() {
   const { state } = useSidebar();
-  const { userProfile, signOut } = useAuth();
+  const { userProfile, userRole, signOut } = useAuth();
   const location = useLocation();
   const currentPath = location.pathname;
 
-  const items = userProfile ? getNavigationItems(userProfile.role) : [];
+  const items = userRole ? getNavigationItems(userRole) : [];
   const collapsed = state === "collapsed";
 
   const isActive = (path: string) => currentPath === path;
@@ -140,7 +140,7 @@ export function AppSidebar() {
                     {userProfile?.name}
                   </p>
                   <p className="text-xs text-sidebar-foreground/60 capitalize">
-                    {userProfile?.role}
+                    {userRole}
                   </p>
                 </div>
               </div>
