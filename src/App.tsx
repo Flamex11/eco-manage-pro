@@ -33,11 +33,11 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function DashboardRouter() {
-  const { userProfile } = useAuth();
+  const { userProfile, userRole } = useAuth();
   
   if (!userProfile) return <Navigate to="/auth" replace />;
   
-  switch (userProfile.role) {
+  switch (userRole) {
     case 'admin':
       return <AdminDashboard />;
     case 'collector':

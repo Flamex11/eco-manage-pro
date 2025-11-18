@@ -23,7 +23,7 @@ interface Complaint {
 }
 
 export function ComplaintsPage() {
-  const { userProfile } = useAuth();
+  const { userProfile, userRole } = useAuth();
   const { toast } = useToast();
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -41,7 +41,7 @@ export function ComplaintsPage() {
     try {
       let query = supabase.from('complaints').select('*');
 
-      if (userProfile.role === 'resident') {
+      if (userRole === 'resident') {
         query = query.eq('resident_id', userProfile.id);
       }
 
@@ -146,14 +146,14 @@ export function ComplaintsPage() {
         <div>
           <h1 className="text-3xl font-bold text-foreground">Complaints</h1>
           <p className="text-muted-foreground">
-            {userProfile?.role === 'resident' 
+            {userRole === 'resident' 
               ? 'Submit and track your waste management complaints'
               : 'Manage and resolve citizen complaints'
             }
           </p>
         </div>
         
-        {userProfile?.role === 'resident' && (
+        {userRole === 'resident' && (
           <Button 
             onClick={() => setShowForm(!showForm)}
             className="gradient-primary text-white shadow-primary"
@@ -165,7 +165,7 @@ export function ComplaintsPage() {
       </div>
 
       {/* Complaint Form */}
-      {showForm && userProfile?.role === 'resident' && (
+      {showForm && userRole === 'resident' && (
         <ComplaintForm onSubmit={handleFormSubmit} />
       )}
 
@@ -239,7 +239,7 @@ export function ComplaintsPage() {
                       )}
                     </div>
 
-                    {userProfile?.role === 'admin' && complaint.status !== 'resolved' && (
+                    {userRole === 'admin' && complaint.status !== 'resolved' && (
                       <div className="flex gap-2 mt-3">
                         {complaint.status === 'open' && (
                           <Button

@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 export function SettingsPage() {
   const {
     userProfile,
+    userRole,
     refreshProfile
   } = useAuth();
   const {
@@ -190,7 +191,7 @@ export function SettingsPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="role">Role</Label>
-                  <Input id="role" value={userProfile?.role} disabled className="bg-muted border-border cursor-not-allowed capitalize" />
+                  <Input id="role" value={userRole || ''} disabled className="bg-muted border-border cursor-not-allowed capitalize" />
                   <p className="text-xs text-muted-foreground">Role cannot be changed</p>
                 </div>
               </div>

@@ -6,6 +6,7 @@ import { User } from '@/types/database';
 interface AuthContextType {
   user: SupabaseUser | null;
   userProfile: User | null;
+  userRole: string | null;
   session: Session | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
@@ -27,6 +28,7 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [userProfile, setUserProfile] = useState<User | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -50,10 +52,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const fetchUserRole = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching user role:', error);
+        return null;
+      }
+
+      return data?.role || null;
+    } catch (error) {
+      console.error('Error fetching user role:', error);
+      return null;
+    }
+  };
+
   const refreshProfile = async () => {
     if (user) {
       const profile = await fetchUserProfile(user.id);
       setUserProfile(profile);
+      const role = await fetchUserRole(user.id);
+      setUserRole(role);
     }
   };
 
@@ -69,10 +93,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setTimeout(async () => {
             const profile = await fetchUserProfile(session.user.id);
             setUserProfile(profile);
+            const role = await fetchUserRole(session.user.id);
+            setUserRole(role);
             setLoading(false);
           }, 0);
         } else {
           setUserProfile(null);
+          setUserRole(null);
           setLoading(false);
         }
       }
@@ -87,6 +114,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setTimeout(async () => {
           const profile = await fetchUserProfile(session.user.id);
           setUserProfile(profile);
+          const role = await fetchUserRole(session.user.id);
+          setUserRole(role);
           setLoading(false);
         }, 0);
       } else {
@@ -134,13 +163,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             auth_user_id: authData.user.id,
             email,
             name,
-            role: role as any,
             ward_id: wardId,
           }
         ]);
 
       if (profileError) {
         console.error('Error creating user profile:', profileError);
+        return { error: profileError };
+      }
+
+      // Insert user role into user_roles table
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .insert([
+          {
+            user_id: authData.user.id,
+            role: role as any,
+          }
+        ]);
+
+      if (roleError) {
+        console.error('Error creating user role:', roleError);
+        return { error: roleError };
       }
     }
 
@@ -151,12 +195,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await supabase.auth.signOut();
     setUser(null);
     setUserProfile(null);
+    setUserRole(null);
     setSession(null);
   };
 
   const value = {
     user,
     userProfile,
+    userRole,
     session,
     loading,
     signIn,

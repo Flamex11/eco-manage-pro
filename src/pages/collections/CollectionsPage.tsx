@@ -19,7 +19,7 @@ interface WasteCollection {
 }
 
 export function CollectionsPage() {
-  const { userProfile } = useAuth();
+  const { userProfile, userRole } = useAuth();
   const [collections, setCollections] = useState<WasteCollection[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
@@ -34,9 +34,9 @@ export function CollectionsPage() {
     try {
       let query = supabase.from('waste_collections').select('*');
 
-      if (userProfile.role === 'collector') {
+      if (userRole === 'collector') {
         query = query.eq('collector_id', userProfile.id);
-      } else if (userProfile.role === 'admin') {
+      } else if (userRole === 'admin') {
         // Admins can see all collections
       }
 
@@ -121,14 +121,14 @@ export function CollectionsPage() {
         <div>
           <h1 className="text-3xl font-bold text-foreground">Collections</h1>
           <p className="text-muted-foreground">
-            {userProfile?.role === 'collector' 
+            {userRole === 'collector' 
               ? 'Manage your assigned waste collections'
               : 'Monitor waste collections across all wards'
             }
           </p>
         </div>
         
-        {userProfile?.role === 'admin' && (
+        {userRole === 'admin' && (
           <Button className="gradient-primary text-white shadow-primary">
             <Plus className="w-4 h-4 mr-2" />
             Schedule Collection
@@ -192,7 +192,7 @@ export function CollectionsPage() {
                 </p>
               )}
 
-              {userProfile?.role === 'collector' && (
+              {userRole === 'collector' && (
                 <Button
                   variant={collection.status === 'pending' ? 'default' : 'outline'}
                   size="sm"
