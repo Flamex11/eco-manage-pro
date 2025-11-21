@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { DashboardLayout } from "@/components/layout/DashboardLayout";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -146,116 +146,114 @@ export function CollectionHistoryPage() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Collection History</h1>
-            <p className="text-muted-foreground mt-1">View your garbage collection schedule and status</p>
-          </div>
-          <Calendar className="w-8 h-8 text-primary" />
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Collection History</h1>
+          <p className="text-muted-foreground mt-1">View your garbage collection schedule and status</p>
         </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Filter by Month & Year</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-4 items-end">
-              <div className="flex-1 min-w-[200px]">
-                <label className="text-sm font-medium text-foreground mb-2 block">Month</label>
-                <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {months.map((month) => (
-                      <SelectItem key={month.value} value={month.value}>
-                        {month.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex-1 min-w-[200px]">
-                <label className="text-sm font-medium text-foreground mb-2 block">Year</label>
-                <Select value={selectedYear} onValueChange={setSelectedYear}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {years.map((year) => (
-                      <SelectItem key={year.value} value={year.value}>
-                        {year.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <Button onClick={downloadPDF} disabled={collections.length === 0} className="gap-2">
-                <Download className="w-4 h-4" />
-                Download PDF
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Collection Records</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="text-center py-8 text-muted-foreground">Loading...</div>
-            ) : collections.length === 0 ? (
-              <div className="text-center py-12">
-                <Calendar className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                <p className="text-lg font-medium text-foreground">No collection history found</p>
-                <p className="text-muted-foreground mt-1">
-                  No garbage collections recorded for {months.find(m => m.value === selectedMonth)?.label} {selectedYear}
-                </p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Day</TableHead>
-                      <TableHead>Time</TableHead>
-                      <TableHead>Waste Type</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Location</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {collections.map((collection) => (
-                      <TableRow key={collection.id}>
-                        <TableCell className="font-medium">
-                          {format(new Date(collection.date), "MMM dd, yyyy")}
-                        </TableCell>
-                        <TableCell>{format(new Date(collection.date), "EEEE")}</TableCell>
-                        <TableCell>{format(new Date(collection.created_at), "hh:mm a")}</TableCell>
-                        <TableCell className="capitalize">{collection.waste_type}</TableCell>
-                        <TableCell>
-                          <span className={`font-medium uppercase ${getStatusColor(collection.status)}`}>
-                            {collection.status}
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {collection.location || "-"}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <Calendar className="w-8 h-8 text-primary" />
       </div>
-    </DashboardLayout>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Filter by Month & Year</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-4 items-end">
+            <div className="flex-1 min-w-[200px]">
+              <label className="text-sm font-medium text-foreground mb-2 block">Month</label>
+              <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {months.map((month) => (
+                    <SelectItem key={month.value} value={month.value}>
+                      {month.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex-1 min-w-[200px]">
+              <label className="text-sm font-medium text-foreground mb-2 block">Year</label>
+              <Select value={selectedYear} onValueChange={setSelectedYear}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {years.map((year) => (
+                    <SelectItem key={year.value} value={year.value}>
+                      {year.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button onClick={downloadPDF} disabled={collections.length === 0} className="gap-2">
+              <Download className="w-4 h-4" />
+              Download PDF
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Collection Records</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="text-center py-8 text-muted-foreground">Loading...</div>
+          ) : collections.length === 0 ? (
+            <div className="text-center py-12">
+              <Calendar className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <p className="text-lg font-medium text-foreground">No collection history found</p>
+              <p className="text-muted-foreground mt-1">
+                No garbage collections recorded for {months.find(m => m.value === selectedMonth)?.label} {selectedYear}
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Day</TableHead>
+                    <TableHead>Time</TableHead>
+                    <TableHead>Waste Type</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Location</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {collections.map((collection) => (
+                    <TableRow key={collection.id}>
+                      <TableCell className="font-medium">
+                        {format(new Date(collection.date), "MMM dd, yyyy")}
+                      </TableCell>
+                      <TableCell>{format(new Date(collection.date), "EEEE")}</TableCell>
+                      <TableCell>{format(new Date(collection.created_at), "hh:mm a")}</TableCell>
+                      <TableCell className="capitalize">{collection.waste_type}</TableCell>
+                      <TableCell>
+                        <span className={`font-medium uppercase ${getStatusColor(collection.status)}`}>
+                          {collection.status}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {collection.location || "-"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 }
