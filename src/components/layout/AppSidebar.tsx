@@ -7,7 +7,8 @@ import {
   Settings, 
   Users,
   MapPin,
-  LogOut
+  LogOut,
+  History
 } from "lucide-react";
 import logoImage from "@/assets/logo.png";
 import { NavLink, useLocation } from "react-router-dom";
@@ -53,6 +54,7 @@ const getNavigationItems = (role: string) => {
   } else {
     return [
       ...baseItems,
+      { title: "Collection History", url: "/history", icon: History },
       { title: "Complaints", url: "/complaints", icon: MessageSquare },
       { title: "Settings", url: "/settings", icon: Settings },
     ];
