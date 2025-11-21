@@ -15,7 +15,6 @@ import { ComplaintsPage } from "./pages/complaints/ComplaintsPage";
 import { AnalyticsPage } from "./pages/analytics/AnalyticsPage";
 import { SettingsPage } from "./pages/settings/SettingsPage";
 import { PickupRequestPage } from "./pages/pickup/PickupRequestPage";
-import { CollectionHistoryPage } from "./pages/history/CollectionHistoryPage";
 import { ChatBot } from "./components/chat/ChatBot";
 import NotFound from "./pages/NotFound";
 
@@ -123,17 +122,6 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <PickupRequestPage />
-                  </ProtectedRoute>
-                } 
-              />
-              
-              <Route 
-                path="/history" 
-                element={
-                  <ProtectedRoute>
-                    <DashboardLayout>
-                      <CollectionHistoryPage />
-                    </DashboardLayout>
                   </ProtectedRoute>
                 } 
               />
